@@ -2,8 +2,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from src.db.database import Base, engine
+from src.db.database import Base, SessionLocal, engine
 from src.routers import tickets
+from src.services.sync import sync_tickets
 
 
 async def init_db():
@@ -14,6 +15,10 @@ async def init_db():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+
+    async with SessionLocal() as db:
+        await sync_tickets(db)
+
     yield
 
 
