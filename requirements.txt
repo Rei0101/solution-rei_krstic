@@ -6,3 +6,5 @@ SQLAlchemy==2.*
 alembic
 pytest
 ruff
+aiosqlite
+python-dotenv
