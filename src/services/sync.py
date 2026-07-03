@@ -1,5 +1,5 @@
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.expression import text
 
 from src.models.ticket import Ticket
 from src.services.dummyjson import fetch_todos, fetch_users
@@ -16,7 +16,7 @@ def transform_todo(todo: dict, users: dict[int, str]) -> dict:
 
 
 async def sync_tickets(db: AsyncSession) -> None:
-    await db.execute(text("DELETE FROM tickets"))
+    await db.execute(delete(Ticket))
 
     todos_data = await fetch_todos()
     users_data = await fetch_users()
@@ -39,3 +39,5 @@ async def sync_tickets(db: AsyncSession) -> None:
 
     db.add_all(tickets)
     await db.commit()
+
+    await db.flush()
