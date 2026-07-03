@@ -7,7 +7,6 @@ class TicketResponse(BaseModel):
     status: str
     priority: str
     description: str | None = None
-    raw_source: dict
     model_config = {
         "from_attributes": True
     }
@@ -17,3 +16,7 @@ class TicketListResponse(BaseModel):
     items: list[TicketResponse]
     page: int
     size: int
+
+
+class TicketDetailResponse(BaseModel):
+    raw_source: dict

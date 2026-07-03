@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.session import get_db
 from src.models.ticket import Ticket
-from src.schemas.ticket import TicketListResponse, TicketResponse
+from src.schemas.ticket import TicketListResponse, TicketDetailResponse
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
 
@@ -38,7 +38,7 @@ async def get_tickets(
     }
 
 
-@router.get("/{ticket_id}", response_model=TicketResponse)
+@router.get("/{ticket_id}", response_model=TicketDetailResponse)
 async def get_ticket(
     ticket_id: int,
     db: AsyncSession = Depends(get_db),
