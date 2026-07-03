@@ -12,6 +12,7 @@ def transform_todo(todo: dict, users: dict[int, str]) -> dict:
         "status": "closed" if todo["completed"] else "open",
         "priority": ["low", "medium", "high"][todo["id"] % 3],
         "assignee": users.get(todo["userId"]),
+        "raw_source": todo,
     }
 
 
@@ -33,6 +34,7 @@ async def sync_tickets(db: AsyncSession) -> None:
             status=t["status"],
             priority=t["priority"],
             assignee=t["assignee"],
+            raw_source=t["raw_source"],
         )
         for t in tickets_data
     ]
