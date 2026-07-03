@@ -7,9 +7,7 @@ class TicketResponse(BaseModel):
     status: str
     priority: str
     description: str | None = None
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = {"from_attributes": True}
 
 
 class TicketListResponse(BaseModel):
