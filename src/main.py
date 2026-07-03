@@ -14,10 +14,14 @@ async def init_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_db()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
     async with SessionLocal() as db:
-        await sync_tickets(db)
+        try:
+            await sync_tickets(db)
+        except Exception as e:
+            print(f"Initial sync failed: {e}")
 
     yield
 
