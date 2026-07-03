@@ -7,3 +7,9 @@ class TicketResponse(BaseModel):
     status: str
     priority: str
     description: str | None = None
+
+
+class TicketListResponse(BaseModel):
+    items: list[TicketResponse]
+    page: int
+    size: int
