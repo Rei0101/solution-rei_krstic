@@ -1,7 +1,8 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
 from src.db.database import Base, engine
-from src.models.ticket import Ticket
 from src.routers import tickets
 
 
@@ -12,10 +13,8 @@ async def init_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # startup
     await init_db()
     yield
-    # shutdown (optional cleanup)
 
 
 app = FastAPI(lifespan=lifespan)
