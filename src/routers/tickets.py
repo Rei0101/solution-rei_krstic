@@ -38,6 +38,23 @@ async def get_tickets(
     }
 
 
+@router.get("/{ticket_id}", response_model=TicketResponse)
+async def get_ticket(
+    ticket_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Ticket).where(Ticket.id == ticket_id)
+    )
+
+    ticket = result.scalar_one_or_none()
+
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    return ticket
+
+
 @router.post("")
 async def create_ticket(db: AsyncSession = Depends(get_db)):
     ticket = Ticket(
