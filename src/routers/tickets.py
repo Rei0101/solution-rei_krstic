@@ -15,6 +15,50 @@ from src.schemas.ticket import (
 router = APIRouter(prefix="/tickets", tags=["tickets"])
 
 
+@router.get("/search", response_model=TicketListResponse)
+async def search_tickets(
+    page: int = Query(1, ge=1),
+    size: int = Query(10, ge=1, le=100),
+    q: str = Query(..., min_length=1),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Ticket).where(Ticket.title.ilike(f"%{q}%"))
+    )
+
+    tickets = result.scalars().all()
+
+    return TicketListResponse(
+        items=[
+            TicketResponse(
+                id=t.id,
+                title=t.title,
+                status=t.status,
+                priority=t.priority,
+                description=t.title[:100] if t.title else None,
+            )
+            for t in tickets
+        ],
+        page=page,
+        size=size,
+    )
+
+
+@router.get("/{ticket_id}", response_model=TicketDetailResponse)
+async def get_ticket(
+    ticket_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(Ticket).where(Ticket.id == ticket_id))
+
+    ticket = result.scalar_one_or_none()
+
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    return ticket
+
+
 @router.get("", response_model=TicketListResponse)
 async def get_tickets(
     page: int = Query(1, ge=1),
@@ -52,21 +96,6 @@ async def get_tickets(
         page=page,
         size=size,
     )
-
-
-@router.get("/{ticket_id}", response_model=TicketDetailResponse)
-async def get_ticket(
-    ticket_id: int,
-    db: AsyncSession = Depends(get_db),
-):
-    result = await db.execute(select(Ticket).where(Ticket.id == ticket_id))
-
-    ticket = result.scalar_one_or_none()
-
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-
-    return ticket
 
 
 @router.post("")
