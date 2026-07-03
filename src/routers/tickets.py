@@ -17,11 +17,7 @@ async def get_tickets(
 ):
     offset = (page - 1) * size
 
-    result = await db.execute(
-        select(Ticket)
-        .offset(offset)
-        .limit(size)
-    )
+    result = await db.execute(select(Ticket).offset(offset).limit(size))
 
     tickets = result.scalars().all()
 
