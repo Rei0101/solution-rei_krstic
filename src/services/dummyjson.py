@@ -7,15 +7,17 @@ load_dotenv()
 DUMMY_JSON_URL = os.getenv("DUMMY_JSON_URL")
 
 
-async def fetch_todos() -> dict:
+async def fetch_data(endpoint: str):
     async with httpx.AsyncClient() as client:
-        response = await client.get(f"{DUMMY_JSON_URL}/todos")
+        response = await client.get(f"{DUMMY_JSON_URL}/{endpoint}")
         response.raise_for_status()
-        return response.json()
+        data = response.json()
+        return data
 
 
-async def fetch_users() -> dict:
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"{DUMMY_JSON_URL}/users")
-        response.raise_for_status()
-        return response.json()
+async def fetch_todos():
+    return await fetch_data("todos")
+
+
+async def fetch_users():
+    return await fetch_data("users")
