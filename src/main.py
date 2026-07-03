@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-
 from src.routers import tickets
 
 app = FastAPI()
