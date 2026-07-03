@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.database import Base
@@ -12,3 +12,4 @@ class Ticket(Base):
     status: Mapped[str] = mapped_column(String, nullable=False)
     priority: Mapped[str] = mapped_column(String, nullable=False)
     assignee: Mapped[str | None] = mapped_column(String, nullable=True)
+    raw_source: Mapped[dict] = mapped_column(JSON, nullable=False)
