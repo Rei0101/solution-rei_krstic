@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from src.db.database import Base
+from src.models.ticket import Ticket
 
 load_dotenv()
 
@@ -29,8 +30,9 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 
+config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
+print("ALEMBIC DB:", config.get_main_option("sqlalchemy.url"))
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
