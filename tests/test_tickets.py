@@ -12,6 +12,7 @@ async def test_get_tickets(client):
     assert "items" in data
     assert isinstance(data["items"], list)
 
+
 @pytest.mark.asyncio
 async def test_create_ticket(client):
 
@@ -57,6 +58,7 @@ async def test_get_ticket_by_id(client):
 
     assert data["id"] == ticket["id"]
 
+
 @pytest.mark.asyncio
 async def test_patch_ticket(client):
 
@@ -74,9 +76,7 @@ async def test_patch_ticket(client):
 
     response = await client.patch(
         f"/tickets/{ticket['id']}",
-        json={
-            "status": "closed"
-        },
+        json={"status": "closed"},
     )
 
     assert response.status_code == 200
@@ -85,12 +85,14 @@ async def test_patch_ticket(client):
 
     assert data["status"] == "closed"
 
+
 @pytest.mark.asyncio
 async def test_ticket_not_found(client):
 
     response = await client.get("/tickets/999999")
 
     assert response.status_code == 404
+
 
 @pytest.mark.asyncio
 async def test_filter_status(client):
@@ -104,6 +106,7 @@ async def test_filter_status(client):
     for ticket in data["items"]:
         assert ticket["status"] == "open"
 
+
 @pytest.mark.asyncio
 async def test_search(client):
 
@@ -114,3 +117,17 @@ async def test_search(client):
     data = response.json()
 
     assert "items" in data
+
+
+@pytest.mark.asyncio
+async def test_stats(client):
+
+    response = await client.get("tickets/stats")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "total" in data
+    assert "status" in data
+    assert "priority" in data
