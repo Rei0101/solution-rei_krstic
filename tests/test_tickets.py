@@ -94,8 +94,10 @@ async def test_patch_already_closed_ticket_throws_400(client):
             "title": "Immutable ticket",
             "status": "open",
             "priority": "low",
+            "description": "",
         },
     )
+
     ticket_id = created.json()["id"]
 
     await client.patch(f"/tickets/{ticket_id}", json={"status": "closed"})
@@ -105,9 +107,11 @@ async def test_patch_already_closed_ticket_throws_400(client):
     )
 
     assert response.status_code == 400
+
     data = response.json()
-    assert data["detail"] == "BAD_REQUEST"
-    assert "already closed and finalized" in data["message"]
+
+    assert data["detail"]["code"] == "BAD_REQUEST"
+    assert "already closed and finalized" in data["detail"]["message"]
 
 
 @pytest.mark.asyncio

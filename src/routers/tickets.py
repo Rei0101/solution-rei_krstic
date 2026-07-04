@@ -134,7 +134,10 @@ async def get_tickets(
 ):
     offset = (page - 1) * size
 
-    query = select(Ticket)
+    query = (
+        select(Ticket)
+        .order_by(Ticket.id.asc())
+    )
 
     if status:
         query = query.where(Ticket.status == status)
