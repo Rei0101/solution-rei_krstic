@@ -33,6 +33,7 @@ target_metadata = Base.metadata
 config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
 print("ALEMBIC DB:", config.get_main_option("sqlalchemy.url"))
 
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 

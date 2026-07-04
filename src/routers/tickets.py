@@ -39,11 +39,9 @@ async def stats(db: AsyncSession = Depends(get_db)):
     )
 
     assignee_result = await db.execute(
-        select(
-            Ticket.assignee,
-            func.count(Ticket.id)
+        select(Ticket.assignee, func.count(Ticket.id)).group_by(
+            Ticket.assignee
         )
-        .group_by(Ticket.assignee)
     )
 
     assignees = {
