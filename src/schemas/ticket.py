@@ -9,6 +9,7 @@ class TicketResponse(BaseModel):
     status: str
     priority: str
     description: str | None = None
+    assignee: str | None = None
     model_config = {"from_attributes": True}
 
 
