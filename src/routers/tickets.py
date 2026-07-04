@@ -1,12 +1,13 @@
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.session import get_db
 from src.models.ticket import Ticket
 from src.schemas.ticket import (
+    TicketCreate,
     TicketDetailResponse,
     TicketListResponse,
     TicketResponse,
@@ -98,13 +99,21 @@ async def get_tickets(
     )
 
 
-@router.post("")
-async def create_ticket(db: AsyncSession = Depends(get_db)):
+@router.post("", response_model=TicketDetailResponse, status_code=201)
+async def create_ticket(
+    ticket_data: TicketCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(func.max(Ticket.id)))
+    max_id = result.scalar() or 0
+
     ticket = Ticket(
-        title="Test ticket",
-        status="open",
-        priority="medium",
-        assignee=None,
+        id=max_id + 1,
+        title=ticket_data.title,
+        status=ticket_data.status,
+        priority=ticket_data.priority,
+        assignee=ticket_data.assignee,
+        raw_source={},
     )
 
     db.add(ticket)
