@@ -1,21 +1,18 @@
-import logging
 from contextlib import asynccontextmanager
+import logging
 
 from fastapi import FastAPI
 from sqlalchemy import select
 
-from src.db.database import SessionLocal
 from src.utils.exceptions import register_error_handlers
+from src.utils.logging import setup_logging
+from src.db.database import SessionLocal
+from src.utils.exceptions import ServiceUnavailableError
 from src.models.ticket import Ticket
 from src.routers import tickets
 from src.services.sync import sync_tickets
-from src.utils.exceptions import ServiceUnavailableError
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - [%(name)s] - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
+setup_logging()
 logger = logging.getLogger(__name__)
 
 
@@ -38,7 +35,7 @@ async def lifespan(app: FastAPI):
             except Exception as e:
                 logger.error(
                     f"Initial sync failed due to unexpected error: {e}",
-                    exc_info=True,
+                    exc_info=True
                 )
 
     yield
@@ -47,7 +44,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 register_error_handlers(app)
-
 
 @app.get("/")
 async def root():
