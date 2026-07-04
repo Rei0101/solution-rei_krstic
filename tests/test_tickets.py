@@ -103,3 +103,14 @@ async def test_filter_status(client):
 
     for ticket in data["items"]:
         assert ticket["status"] == "open"
+
+@pytest.mark.asyncio
+async def test_search(client):
+
+    response = await client.get("/tickets/search?q=Learn")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "items" in data
