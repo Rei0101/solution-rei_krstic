@@ -84,3 +84,10 @@ async def test_patch_ticket(client):
     data = response.json()
 
     assert data["status"] == "closed"
+
+@pytest.mark.asyncio
+async def test_ticket_not_found(client):
+
+    response = await client.get("/tickets/999999")
+
+    assert response.status_code == 404
