@@ -127,7 +127,9 @@ async def update_ticket(
     ticket_data: TicketUpdate,
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(select(Ticket).where(Ticket.id == ticket_id))
+    result = await db.execute(
+        select(Ticket).where(Ticket.id == ticket_id)
+    )
 
     ticket = result.scalar_one_or_none()
 

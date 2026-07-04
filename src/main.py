@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from sqlalchemy import func, select
 
 from src.db.database import Base, SessionLocal, engine
+from src.models.ticket import Ticket
 from src.routers import tickets
 from src.services.sync import sync_tickets
 
@@ -18,10 +20,14 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
 
     async with SessionLocal() as db:
-        try:
-            await sync_tickets(db)
-        except Exception as e:
-            print(f"Initial sync failed: {e}")
+        result = await db.execute(select(func.count(Ticket.id)))
+        count = result.scalar()
+
+        if count == 0:
+            try:
+                await sync_tickets(db)
+            except Exception as e:
+                print(f"Initial sync failed: {e}")
 
     yield
 
