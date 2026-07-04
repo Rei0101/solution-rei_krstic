@@ -1,29 +1,21 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from sqlalchemy import func, select
+from sqlalchemy import select
 
-from src.db.database import Base, SessionLocal, engine
+from src.db.database import SessionLocal
 from src.models.ticket import Ticket
 from src.routers import tickets
 from src.services.sync import sync_tickets
 
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
     async with SessionLocal() as db:
-        result = await db.execute(select(func.count(Ticket.id)))
-        count = result.scalar()
+        exists = await db.execute(select(Ticket.id).limit(1))
+        first = exists.scalar_one_or_none()
 
-        if count == 0:
+        if first is None:
             try:
                 await sync_tickets(db)
             except Exception as e:
