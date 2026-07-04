@@ -8,3 +8,5 @@ pytest
 ruff
 aiosqlite
 python-dotenv
+pytest-asyncio
+pytest-cov
