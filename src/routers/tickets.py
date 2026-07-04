@@ -104,11 +104,7 @@ async def create_ticket(
     ticket_data: TicketCreate,
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(select(func.max(Ticket.id)))
-    max_id = result.scalar() or 0
-
     ticket = Ticket(
-        id=max_id + 1,
         title=ticket_data.title,
         status=ticket_data.status,
         priority=ticket_data.priority,
