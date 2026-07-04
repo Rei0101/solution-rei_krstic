@@ -85,27 +85,36 @@ async def test_patch_ticket(client):
 
     assert data["status"] == "closed"
 
+
 @pytest.mark.asyncio
 async def test_patch_already_closed_ticket_throws_400(client):
-    created = await client.post("/tickets", json={
-        "title": "Immutable ticket", "status": "open", "priority": "low"
-    })
+    created = await client.post(
+        "/tickets",
+        json={
+            "title": "Immutable ticket",
+            "status": "open",
+            "priority": "low",
+        },
+    )
     ticket_id = created.json()["id"]
 
     await client.patch(f"/tickets/{ticket_id}", json={"status": "closed"})
 
-    response = await client.patch(f"/tickets/{ticket_id}", json={"status": "closed"})
-    
+    response = await client.patch(
+        f"/tickets/{ticket_id}", json={"status": "closed"}
+    )
+
     assert response.status_code == 400
     data = response.json()
     assert data["detail"] == "BAD_REQUEST"
     assert "already closed and finalized" in data["message"]
 
+
 @pytest.mark.asyncio
 async def test_ticket_not_found(client):
     response = await client.get("/tickets/999999")
     assert response.status_code == 404
-    
+
     data = response.json()
     assert data["detail"] == "NOT_FOUND"
     assert "does not exist" in data["message"]
@@ -139,7 +148,7 @@ async def test_search(client):
 @pytest.mark.asyncio
 async def test_stats(client):
 
-    response = await client.get("tickets/stats")
+    response = await client.get("/tickets/stats")
 
     assert response.status_code == 200
 
