@@ -88,10 +88,12 @@ async def test_patch_ticket(client):
 
 @pytest.mark.asyncio
 async def test_ticket_not_found(client):
-
     response = await client.get("/tickets/999999")
-
     assert response.status_code == 404
+    
+    data = response.json()
+    assert data["detail"] == "NOT_FOUND"
+    assert "does not exist" in data["message"]
 
 
 @pytest.mark.asyncio
