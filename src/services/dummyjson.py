@@ -3,7 +3,7 @@ import os
 import httpx
 from dotenv import load_dotenv
 
-from src.exceptions import ServiceUnavailableError
+from src.utils.exceptions import ServiceUnavailableError
 
 load_dotenv()
 
