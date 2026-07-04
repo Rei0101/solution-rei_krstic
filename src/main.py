@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from sqlalchemy import select
 
 from src.db.database import SessionLocal
-from src.handlers.exception_handlers import register_error_handlers
+from src.utils.exceptions import register_error_handlers
 from src.models.ticket import Ticket
 from src.routers import tickets
 from src.services.sync import sync_tickets
