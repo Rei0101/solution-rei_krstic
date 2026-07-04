@@ -5,20 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models.ticket import Ticket
 from src.services.dummyjson import fetch_todos, fetch_users
+from src.utils.helpers import transform_todo
 
 logger = logging.getLogger(__name__)
-
-
-def transform_todo(todo: dict, users: dict[int, str]) -> dict:
-    return {
-        "id": todo["id"],
-        "title": todo["todo"],
-        "status": "closed" if todo["completed"] else "open",
-        "priority": ["low", "medium", "high"][todo["id"] % 3],
-        "description": todo.get("description", ""),
-        "assignee": users.get(todo["userId"]),
-        "raw_source": todo,
-    }
 
 
 async def sync_tickets(db: AsyncSession) -> None:
