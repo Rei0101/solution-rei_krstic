@@ -131,3 +131,34 @@ async def test_stats(client):
     assert "total" in data
     assert "status" in data
     assert "priority" in data
+
+
+@pytest.mark.asyncio
+async def test_ticket_lifecycle(client):
+
+    payload = {
+        "title": "DB test ticket",
+        "status": "open",
+        "priority": "high",
+        "description": "integration test",
+        "assignee": "john",
+    }
+
+    create_res = await client.post("/tickets", json=payload)
+    assert create_res.status_code == 201
+
+    ticket = create_res.json()
+    ticket_id = ticket["id"]
+
+    get_res = await client.get(f"/tickets/{ticket_id}")
+    assert get_res.status_code == 200
+    assert get_res.json()["title"] == "DB test ticket"
+
+    patch_res = await client.patch(
+        f"/tickets/{ticket_id}", json={"status": "closed"}
+    )
+    assert patch_res.status_code == 200
+    assert patch_res.json()["status"] == "closed"
+
+    get_again = await client.get(f"/tickets/{ticket_id}")
+    assert get_again.json()["status"] == "closed"
