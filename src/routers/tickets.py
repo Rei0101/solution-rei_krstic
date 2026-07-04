@@ -36,7 +36,7 @@ async def search_tickets(
                 title=t.title,
                 status=t.status,
                 priority=t.priority,
-                description=t.title[:100] if t.title else None,
+                description=t.description,
             )
             for t in tickets
         ],
@@ -90,7 +90,7 @@ async def get_tickets(
                 title=t.title,
                 status=t.status,
                 priority=t.priority,
-                description=t.title[:100] if t.title else None,
+                description=t.description,
             )
             for t in tickets
         ],
@@ -108,6 +108,7 @@ async def create_ticket(
         title=ticket_data.title,
         status=ticket_data.status,
         priority=ticket_data.priority,
+        description=ticket_data.description,
         assignee=ticket_data.assignee,
         raw_source={},
     )

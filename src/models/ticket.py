@@ -11,5 +11,6 @@ class Ticket(Base):
     title: Mapped[str] = mapped_column(String, nullable=False)
     status: Mapped[str] = mapped_column(String, nullable=False)
     priority: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str | None] = mapped_column(String, nullable=True)
     assignee: Mapped[str | None] = mapped_column(String, nullable=True)
     raw_source: Mapped[dict] = mapped_column(JSON, nullable=False)

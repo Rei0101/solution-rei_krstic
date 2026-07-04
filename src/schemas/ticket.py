@@ -26,4 +26,5 @@ class TicketCreate(BaseModel):
     title: str
     status: Literal["open", "closed"]
     priority: Literal["low", "medium", "high"]
+    description: str | None = None
     assignee: str | None = None
