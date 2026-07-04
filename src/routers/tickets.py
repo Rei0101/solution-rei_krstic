@@ -111,7 +111,7 @@ async def create_ticket(
         priority=ticket_data.priority,
         description=ticket_data.description,
         assignee=ticket_data.assignee,
-        raw_source={},
+        raw_source=ticket_data.model_dump(),
     )
 
     db.add(ticket)
@@ -127,9 +127,7 @@ async def update_ticket(
     ticket_data: TicketUpdate,
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(
-        select(Ticket).where(Ticket.id == ticket_id)
-    )
+    result = await db.execute(select(Ticket).where(Ticket.id == ticket_id))
 
     ticket = result.scalar_one_or_none()
 
