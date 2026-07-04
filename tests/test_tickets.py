@@ -91,3 +91,15 @@ async def test_ticket_not_found(client):
     response = await client.get("/tickets/999999")
 
     assert response.status_code == 404
+
+@pytest.mark.asyncio
+async def test_filter_status(client):
+
+    response = await client.get("/tickets?status=open")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    for ticket in data["items"]:
+        assert ticket["status"] == "open"
