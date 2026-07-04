@@ -209,7 +209,7 @@ async def update_ticket(
         and updates["status"] == "closed"
     ):
         raise InvalidTicketOperationError(
-            "This ticket is already closed and finalized."
+            "Ticket already closed and finalized."
         )
 
     for field, value in updates.items():
@@ -217,5 +217,8 @@ async def update_ticket(
 
     await db.commit()
     await db.refresh(ticket)
+
+    if ticket.description is None:
+        ticket.description = ""
 
     return ticket

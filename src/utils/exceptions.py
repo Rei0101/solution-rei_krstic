@@ -50,12 +50,17 @@ class InvalidTicketOperationError(TicketHubException):
     """
     Raised when an operation violates a core business validation rule
     (HTTP 400).
+    Captures structured error metadata matching your API standard.
     """
 
-    pass
+    def __init__(self, message: str = "Ticket already closed and finalized"):
+        self.code = "BAD_REQUEST"
+        self.message = message
+        super().__init__(self.message)
 
 
 def register_error_handlers(app: FastAPI) -> None:
+
     @app.exception_handler(TicketNotFoundError)
     async def ticket_not_found_handler(
         request: Request, exc: TicketNotFoundError
@@ -80,7 +85,7 @@ def register_error_handlers(app: FastAPI) -> None:
     ):
         return JSONResponse(
             status_code=400,
-            content={"detail": "BAD_REQUEST", "message": str(exc)},
+            content={"detail": {"code": exc.code, "message": exc.message}},
         )
 
     @app.exception_handler(ServiceUnavailableError)
