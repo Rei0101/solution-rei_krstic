@@ -4,11 +4,6 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.utils.exceptions import (
-    InvalidTicketOperationError,
-    TicketAlreadyExistsError,
-    TicketNotFoundError,
-)
 from src.db.session import get_db
 from src.models.ticket import Ticket
 from src.schemas.ticket import (
@@ -17,6 +12,11 @@ from src.schemas.ticket import (
     TicketListResponse,
     TicketResponse,
     TicketUpdate,
+)
+from src.utils.exceptions import (
+    InvalidTicketOperationError,
+    TicketAlreadyExistsError,
+    TicketNotFoundError,
 )
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
@@ -84,7 +84,7 @@ async def search_tickets(
     db: AsyncSession = Depends(get_db),
 ):
     offset = (page - 1) * size
-    
+
     result = await db.execute(
         select(Ticket)
         .where(Ticket.title.ilike(f"%{q}%"))
@@ -203,8 +203,14 @@ async def update_ticket(
 
     updates = ticket_data.model_dump(exclude_unset=True)
 
-    if "status" in updates and ticket.status == "closed" and updates["status"] == "closed":
-        raise InvalidTicketOperationError("This ticket is already closed and finalized.")
+    if (
+        "status" in updates
+        and ticket.status == "closed"
+        and updates["status"] == "closed"
+    ):
+        raise InvalidTicketOperationError(
+            "This ticket is already closed and finalized."
+        )
 
     for field, value in updates.items():
         setattr(ticket, field, value)

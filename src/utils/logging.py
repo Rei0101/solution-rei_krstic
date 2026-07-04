@@ -1,6 +1,7 @@
 import logging
 import sys
 
+
 def setup_logging() -> None:
     logging.basicConfig(
         level=logging.INFO,
@@ -8,5 +9,5 @@ def setup_logging() -> None:
         datefmt="%Y-%m-%d %H:%M:%S",
         stream=sys.stdout,
     )
-    
+
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
