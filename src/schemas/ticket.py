@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class TicketResponse(BaseModel):
@@ -26,5 +26,5 @@ class TicketCreate(BaseModel):
     title: str
     status: Literal["open", "closed"]
     priority: Literal["low", "medium", "high"]
-    description: str | None = None
+    description: str | None = Field(default="", max_length=100)
     assignee: str | None = None
