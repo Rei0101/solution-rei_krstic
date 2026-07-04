@@ -1,7 +1,7 @@
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.session import get_db
@@ -15,6 +15,62 @@ from src.schemas.ticket import (
 )
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
+
+
+@router.get("/stats")
+async def stats(db: AsyncSession = Depends(get_db)):
+    total = await db.scalar(select(func.count(Ticket.id)))
+
+    open_count = await db.scalar(
+        select(func.count(Ticket.id)).where(Ticket.status == "open")
+    )
+    closed_count = await db.scalar(
+        select(func.count(Ticket.id)).where(Ticket.status == "closed")
+    )
+
+    low_count = await db.scalar(
+        select(func.count(Ticket.id)).where(Ticket.priority == "low")
+    )
+    medium_count = await db.scalar(
+        select(func.count(Ticket.id)).where(Ticket.priority == "medium")
+    )
+    high_count = await db.scalar(
+        select(func.count(Ticket.id)).where(Ticket.priority == "high")
+    )
+
+    assignee_result = await db.execute(
+        select(
+            Ticket.assignee,
+            func.count(Ticket.id)
+        )
+        .group_by(Ticket.assignee)
+    )
+
+    assignees = {
+        row[0] if row[0] else "unassigned": row[1]
+        for row in assignee_result.all()
+    }
+
+    completion_rate = (closed_count / total) if total else 0
+    open_ratio = (open_count / total) if total else 0
+
+    return {
+        "total": total,
+        "status": {
+            "open": open_count,
+            "closed": closed_count,
+        },
+        "priority": {
+            "low": low_count,
+            "medium": medium_count,
+            "high": high_count,
+        },
+        "ratios": {
+            "open_ratio": round(open_ratio, 3),
+            "completion_rate": round(completion_rate, 3),
+        },
+        "assignees": assignees,
+    }
 
 
 @router.get("/search", response_model=TicketListResponse)
