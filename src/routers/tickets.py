@@ -1,9 +1,14 @@
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.utils.exceptions import (
+    InvalidTicketOperationError,
+    TicketAlreadyExistsError,
+    TicketNotFoundError,
+)
 from src.db.session import get_db
 from src.models.ticket import Ticket
 from src.schemas.ticket import (
@@ -78,8 +83,13 @@ async def search_tickets(
     q: str = Query(..., min_length=1),
     db: AsyncSession = Depends(get_db),
 ):
+    offset = (page - 1) * size
+    
     result = await db.execute(
-        select(Ticket).where(Ticket.title.ilike(f"%{q}%"))
+        select(Ticket)
+        .where(Ticket.title.ilike(f"%{q}%"))
+        .offset(offset)
+        .limit(size)
     )
 
     tickets = result.scalars().all()
@@ -106,11 +116,10 @@ async def get_ticket(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Ticket).where(Ticket.id == ticket_id))
-
     ticket = result.scalar_one_or_none()
 
     if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
+        raise TicketNotFoundError(ticket_id)
 
     return ticket
 
@@ -159,6 +168,11 @@ async def create_ticket(
     ticket_data: TicketCreate,
     db: AsyncSession = Depends(get_db),
 ):
+    if hasattr(ticket_data, "id") and ticket_data.id is not None:
+        existing = await db.get(Ticket, ticket_data.id)
+        if existing:
+            raise TicketAlreadyExistsError(ticket_data.id)
+
     ticket = Ticket(
         title=ticket_data.title,
         status=ticket_data.status,
@@ -182,16 +196,15 @@ async def update_ticket(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Ticket).where(Ticket.id == ticket_id))
-
     ticket = result.scalar_one_or_none()
 
     if ticket is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Ticket not found",
-        )
+        raise TicketNotFoundError(ticket_id)
 
     updates = ticket_data.model_dump(exclude_unset=True)
+
+    if "status" in updates and ticket.status == "closed" and updates["status"] == "closed":
+        raise InvalidTicketOperationError("This ticket is already closed and finalized.")
 
     for field, value in updates.items():
         setattr(ticket, field, value)
