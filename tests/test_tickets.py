@@ -56,3 +56,31 @@ async def test_get_ticket_by_id(client):
     data = response.json()
 
     assert data["id"] == ticket["id"]
+
+@pytest.mark.asyncio
+async def test_patch_ticket(client):
+
+    payload = {
+        "title": "Patch me",
+        "status": "open",
+        "priority": "low",
+        "description": "",
+        "assignee": None,
+    }
+
+    created = await client.post("/tickets", json=payload)
+
+    ticket = created.json()
+
+    response = await client.patch(
+        f"/tickets/{ticket['id']}",
+        json={
+            "status": "closed"
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["status"] == "closed"
