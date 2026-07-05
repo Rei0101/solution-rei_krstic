@@ -1,4 +1,4 @@
-# TicketHub - solution/rei_krstic
+# TicketHub
 
 TicketHub is a FastAPI-based backend service that collects, stores, and exposes support tickets from an external source (DummyJSON). The system persists data locally, provides REST endpoints for querying and modifying tickets, and demonstrates async Python, SQLAlchemy, and Alembic migrations. The project includes automated tests, CI pipeline, and Docker support for consistent execution across environments.
 
