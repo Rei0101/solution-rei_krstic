@@ -52,13 +52,13 @@ Start the API locally:
 uvicorn src.main:app --reload
 ```
 
+API will be available at: `http://localhost:8000/docs`
+
 Run unit and integration tests with coverage:
 
 ```bash
 pytest --cov=src --cov-report=term-missing
 ```
-
-API will be available at: `http://localhost:8000/docs`
 
 ### Docker Setup
 
