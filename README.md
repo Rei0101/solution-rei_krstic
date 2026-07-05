@@ -9,8 +9,6 @@ TicketHub is a FastAPI-based backend service that collects, stores, and exposes 
 
 ## Local or Docker Setup
 
-### Local Environment Setup
-
 Clone the repository:
 
 ```bash
@@ -25,6 +23,8 @@ DATABASE_URL=sqlite+aiosqlite:///./tickets.db
 TEST_DATABASE_URL=sqlite+aiosqlite:///./testdb.db
 DUMMY_JSON_URL=https://dummyjson.com
 ```
+
+### Local Environment Setup
 
 Create virtual environment (optional):
 
