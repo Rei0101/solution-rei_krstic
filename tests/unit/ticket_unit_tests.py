@@ -7,7 +7,9 @@ from src.utils.helpers import map_priority, transform_todo
 
 
 def test_priority_mapping():
-    assert map_priority(1) in ["low", "medium", "high"]
+    assert map_priority(0) == "low"
+    assert map_priority(1) == "medium"
+    assert map_priority(2) == "high"
 
 
 def test_ticket_transform():
