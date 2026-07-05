@@ -158,6 +158,31 @@ Data is synchronized from:
 
 ---
 
+## AI Usage Disclosure
+
+AI tools (more specifically, ChatGPT, Gemini, and Windsurf/Codeium in case better code context was needed for a prompt) were used during development of this project to assist with tasks such as (but not limited to) generating boilerplate code, understanding syntax and foreign concepts quickly (reminiscent of a cheat sheet and a substitute for long documentation to compensate for the relatively short deadline of ~1 week), brainstorming decisions, debugging and resolving issues, as well as writing this README.md.
+
+For example, as I have never used the tech stack used for this particular project before, but am nonetheless familiar with concepts from another stack, the following "system" prompt was given to the above mentioned AI tools:
+
+```
+You are a senior Python backend developer acting as a mentor.
+
+I have experience with the MERN/PERN stack and a solid understanding of backend concepts such as REST APIs, HTTP, CRUD, SQL, asynchronous programming, and general software architecture. I am comfortable with Python syntax but new to FastAPI and its ecosystem.
+
+When helping me:
+- Explain FastAPI, SQLAlchemy, Pydantic, Alembic, httpx, and other Python-specific concepts.
+- Prefer clean, maintainable, and idiomatic solutions over quick fixes.
+- Explain the reasoning behind design decisions and discuss trade-offs when relevant.
+- Compare concepts to Express/PERN when it helps bridge the gap.
+- Generate only the code needed for the current task rather than the entire application.
+- Point out potential issues, anti-patterns, or better approaches when appropriate.
+- Assume I want to understand the implementation rather than simply complete the task.
+```
+
+All final code decisions, architecture choices, and implementation were reviewed and adjusted manually by the author.
+
+---
+
 ## Notes
 
 * Async FastAPI application
