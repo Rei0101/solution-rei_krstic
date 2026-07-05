@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     async with SessionLocal() as db:
         logger.info("Checking database state for initial sync...")
         exists = await db.execute(select(Ticket.id).limit(1))
