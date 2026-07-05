@@ -62,16 +62,16 @@ pytest --cov=src --cov-report=term-missing
 
 ### Docker Setup
 
-Build and run the application:
-
-```bash
-docker-compose up --build
-```
-
-After starting the containers, run database migrations inside the API container:
+Run database migrations (with Docker Engine running in the background):
 
 ```bash
 docker-compose run api alembic upgrade head
+```
+
+Build and run the application (also with Docker Engine running in the background):
+
+```bash
+docker-compose up --build
 ```
 
 API will be available at: `http://localhost:8000/docs`
