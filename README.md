@@ -13,7 +13,7 @@ TicketHub is a FastAPI-based backend service that collects, stores, and exposes 
 
 Clone the repository:
 
-```
+```bash
 git clone <repo-url>
 cd <repo-name>
 ```
@@ -28,7 +28,7 @@ DUMMY_JSON_URL=https://dummyjson.com
 
 Create virtual environment (optional):
 
-```
+```bash
 python -m venv venv
 source venv/bin/activate   # Linux / macOS
 venv\Scripts\activate      # Windows
@@ -36,53 +36,45 @@ venv\Scripts\activate      # Windows
 
 Install dependencies:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 Run Alembic migrations locally:
 
-```
+```bash
 alembic upgrade head
 ```
 
 Start the API locally:
 
-```
+```bash
 uvicorn src.main:app --reload
 ```
 
 Run unit and integration tests with coverage:
 
-```
+```bash
 pytest --cov=src --cov-report=term-missing
 ```
 
-API will be available at:
-
-```
-http://localhost:8000/docs
-```
+API will be available at: `http://localhost:8000/docs`
 
 ### Docker Setup
 
 Build and run the application:
 
-```
+```bash
 docker-compose up --build
 ```
 
 After starting the containers, run database migrations inside the API container:
 
-```
+```bash
 docker-compose run api alembic upgrade head
 ```
 
-API will be available at:
-
-```
-http://localhost:8000/docs
-```
+API will be available at: `http://localhost:8000/docs`
 
 ## Makefile Commands
 
