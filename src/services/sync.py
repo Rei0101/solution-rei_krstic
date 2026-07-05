@@ -67,4 +67,4 @@ async def sync_tickets(db: AsyncSession) -> None:
             exc_info=True,
         )
         await db.rollback()
-        raise e
+        raise
