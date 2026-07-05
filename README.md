@@ -2,15 +2,28 @@
 
 TicketHub is a FastAPI-based backend service that collects, stores, and exposes support tickets from an external source (DummyJSON). The system persists data locally, provides REST endpoints for querying and modifying tickets, and demonstrates async Python, SQLAlchemy, and Alembic migrations. The project includes automated tests, CI pipeline, and Docker support for consistent execution across environments.
 
----
+## Requirements
 
-## Environment Setup
+* Python 3.11
+* Docker & Docker Compose (optional)
+
+## Local or Docker Setup
+
+### Local Environment Setup
 
 Clone the repository:
 
 ```
 git clone <repo-url>
 cd <repo-name>
+```
+
+Create a `.env` file based on `.env.example`:
+
+```
+DATABASE_URL=sqlite+aiosqlite:///./tickets.db
+TEST_DATABASE_URL=sqlite+aiosqlite:///./testdb.db
+DUMMY_JSON_URL=https://dummyjson.com
 ```
 
 Create virtual environment (optional):
@@ -27,21 +40,11 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
----
-
-## Configuration Variables
-
-Create a `.env` file based on `.env.example`:
+Run Alembic migrations locally:
 
 ```
-DATABASE_URL=sqlite+aiosqlite:///./tickets.db
-TEST_DATABASE_URL=sqlite+aiosqlite:///./testdbname.db
-DUMMY_JSON_URL=https://dummyjson.com
+alembic upgrade head
 ```
-
----
-
-## Running the Application
 
 Start the API locally:
 
@@ -49,40 +52,19 @@ Start the API locally:
 uvicorn src.main:app --reload
 ```
 
-API documentation:
-
-```
-http://localhost:8000/docs
-```
-
----
-
-## Running Tests
-
 Run unit and integration tests with coverage:
 
 ```
 pytest --cov=src --cov-report=term-missing
 ```
 
----
+API will be available at:
 
-## Makefile Commands
-
-The project includes a Makefile for common tasks:
-
-```makefile
-make install        # install dependencies
-make run            # start application
-make test           # run tests with coverage
-make lint           # run ruff linting
-make format         #format code
-make docker-build   # build docker image
+```
+http://localhost:8000/docs
 ```
 
----
-
-## Docker Setup
+### Docker Setup
 
 Build and run the application:
 
@@ -96,49 +78,36 @@ After starting the containers, run database migrations inside the API container:
 docker-compose run api alembic upgrade head
 ```
 
-Stop containers:
-
-```
-docker-compose down
-```
-
-API available at:
+API will be available at:
 
 ```
 http://localhost:8000/docs
 ```
 
----
+## Makefile Commands
 
-## Database Migrations (Alembic)
+Common development tasks can also be executed using the provided Makefile:
 
-Run migrations:
-
+```makefile
+make install        # install dependencies
+make run            # start application
+make test           # run tests with coverage
+make lint           # run ruff linting
+make format         # format code
+make docker-build   # build docker image
 ```
-alembic upgrade head
-```
-
-Create new migration:
-
-```
-alembic revision --autogenerate -m "message"
-```
-
----
 
 ## CI Pipeline
 
 GitHub Actions runs:
 
-* linting (ruff)
-* tests (pytest)
-* coverage reporting
+* installing requirements
+* linting and checking formatting (ruff)
+* tests and coverage reporting (pytest)
 
----
+The workflow is located at: `.github/workflows/ci.yml`
 
-## API Endpoints
-
-Tickets:
+## API Ticket Endpoints
 
 * GET `/tickets`
 * GET `/tickets/{id}`
@@ -147,8 +116,6 @@ Tickets:
 * GET `/tickets/search?q=`
 * GET `/tickets/stats`
 
----
-
 ## External Data Source
 
 Data is synchronized from:
@@ -156,11 +123,9 @@ Data is synchronized from:
 * [https://dummyjson.com/todos](https://dummyjson.com/todos)
 * [https://dummyjson.com/users](https://dummyjson.com/users)
 
----
-
 ## AI Usage Disclosure
 
-AI tools (more specifically, ChatGPT, Gemini, and Windsurf/Codeium in case better code context was needed for a prompt) were used during development of this project to assist with tasks such as (but not limited to) generating boilerplate code, understanding syntax and foreign concepts quickly (reminiscent of a cheat sheet and a substitute for long documentation to compensate for the relatively short deadline of ~1 week), brainstorming decisions, debugging and resolving issues, as well as writing this README.md.
+AI tools (more specifically, ChatGPT, Gemini, and Windsurf/Codeium in case better code context was needed for a prompt) were used during development of this project to assist with tasks such as (but not limited to) generating boilerplate and example code, understanding syntax and foreign concepts quickly (reminiscent of a cheat sheet and a substitute for long documentation to compensate for the relatively short deadline of ~1 week), brainstorming decisions, debugging and resolving issues, as well as writing this README.md.
 
 For example, as I have never used the tech stack used for this particular project before, but am nonetheless familiar with concepts from another stack, the following "system" prompt was given to the above mentioned AI tools:
 
@@ -179,16 +144,4 @@ When helping me:
 - Assume I want to understand the implementation rather than simply complete the task.
 ```
 
-All final code decisions, architecture choices, and implementation were reviewed and adjusted manually by the author.
-
----
-
-## Notes
-
-* Async FastAPI application
-* SQLAlchemy async ORM
-* External API integration via httpx
-* Structured logging and error handling
-* Dockerized for reproducible environments
-
----
+All final code decisions, architecture choices, and implementation details were reviewed and approved/adjusted manually by the author, who takes full responsibility for them.
