@@ -102,6 +102,7 @@ async def search_tickets(
                 status=t.status,
                 priority=t.priority,
                 description=t.description,
+                assignee=t.assignee,
             )
             for t in tickets
         ],
